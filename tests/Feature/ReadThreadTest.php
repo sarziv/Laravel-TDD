@@ -14,40 +14,39 @@ class ReadThreadTest extends TestCase
     /** @test */
     public function setUp ()
     {
-
+        /*Setup for thread multiple use/clean up*/
         parent::setUp();
 
-        $this->thread = factory('App\Thread')->create();
+        $this->thread = create('App\Thread');
     }
 
 
     /** @test */
-    public function canBrowseThread ()
+    public function can_Browse_Thread ()
     {
-
+        /*Looking for responce if can see thread */
         $response = $this->get('/threads')
-
-        ->assertSee($this->thread->title);
+            ->assertSee($this->thread->title);
 
     }
 
     /** @test */
-    public function canBrowseSingleThread ()
+    public function can_Browse_Single_Thread ()
     {
+        /*Looking for responce if can see thread single post*/
+        $response = $this->get($this->thread->path())
+            ->assertSee($this->thread->title);
 
-
-        $response = $this->get('/threads/' . $this->thread->id)
-
-       ->assertSee($this->thread->title);
     }
 
     /** @test */
-    public function canUserReadReplayAssociatedWithThread ()
+    public function can_User_Read_Replay_Associated_With_Thread ()
     {
-        $replay = factory('App\Reply')->create(['thread_id' => $this->thread->id ]);
+        /*Create a reply for thread and test if you can read it*/
+        $replay = factory('App\Reply')->create(['thread_id' => $this->thread->id]);
 
-        $this->get('/threads/' . $this->thread->id)
 
-        ->assertSee($replay->body);
+        $this->get($this->thread->path())
+            ->assertSee($replay->body);
     }
 }

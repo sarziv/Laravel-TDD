@@ -11,9 +11,12 @@ class ReplyTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function isHasAnOwner()
+    public function it_Has_An_Owner()
     {
-        $reply = factory('App\Reply')->create();
+        /*create thread*/
+        $reply = create('App\Reply');
+
+        /*Asserts that a variable is of a given type.*/
         $this -> assertInstanceOf('App\User', $reply->owner);
     }
 }

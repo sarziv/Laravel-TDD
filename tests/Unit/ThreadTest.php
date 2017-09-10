@@ -12,33 +12,54 @@ class ThreadTest extends TestCase
     use DatabaseMigrations;
 
     protected $thread;
-    /** @test */
+
+
     public function setUp ()
     {
         parent::setUp();
-        $this->thread = factory('App\Thread')->create();
+        $this->thread = create('App\Thread');
     }
 
     /** @test */
-    public function ThreadHasReplies ()
+    public function test_can_thread_make_a_string ()
     {
+        $thread = create('App\Thread');
+
+        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id , $thread->path());
+    }
+
+    /** @test */
+    public function Thread_Has_Replies ()
+    {
+        /*test if thread has replies*/
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $this->thread->replies);
     }
 
     /** @test */
-    public function ThreadHasACreator ()
+    public function Thread_Has_A_Creator ()
     {
+        /*test id thread has a creator*/
         $this->assertInstanceOf('App\User', $this->thread->creator);
     }
 
     /** @test */
-    public function ThreadCanAddReply ()
+    public function Thread_Can_Add_Reply ()
     {
+        /*add a reply to a thread and count should be 1*/
         $this->thread->addReply([
-           'body' => 'FooBar',
+            'body' => 'FooBar',
             'user_id' => 1
         ]);
-
-        $this->assertCount(1,$this->thread->replies);
+        $this->assertCount(1, $this->thread->replies);
     }
+
+    /** @test */
+    public function a_thread_belongs_to_a_channel ()
+    {
+
+        $thread = create('App\Thread');
+
+        $this->assertInstanceOf('App\Channel', $thread->channel);
+    }
+
 }
